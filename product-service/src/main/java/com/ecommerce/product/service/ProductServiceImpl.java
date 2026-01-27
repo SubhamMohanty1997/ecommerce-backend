@@ -1,6 +1,7 @@
 package com.ecommerce.product.service;
 
 import com.ecommerce.product.entity.Product;
+import com.ecommerce.product.exception.ProductNotFoundException;
 import com.ecommerce.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).get();
+        return productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Product not found with ID: "+id));
     }
 
     @Override
@@ -29,12 +31,15 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void deleteProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Product not found with ID: "+id));
         productRepository.deleteById(id);
     }
 
     @Override
     public Product updateProductById(Long id, Product product) {
-        Product existing = productRepository.findById(id).get();
+        Product existing = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Product not found with ID: "+id));
         existing.setId(product.getId());
         existing.setName(product.getName());
         existing.setDescription(product.getDescription());
