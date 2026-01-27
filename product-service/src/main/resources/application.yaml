@@ -1,3 +1,6 @@
+server:
+  port: 9091
+
 spring:
   application:
     name: product-service
@@ -13,17 +16,23 @@ spring:
     show-sql: true
 
   cache:
-    type: REDIS
+    type: redis
   data:
     redis:
       host: localhost
       port: 6379
+      timeout: 60000
 
 management:
+  server:
+    port: 8081
+  info:
+    build:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,env
+        include: health,info,metrics,env,beans
   endpoint:
     health:
       show-details: always
@@ -32,3 +41,15 @@ management:
       enabled: true
     db:
       enabled: true
+info:
+  app:
+    name: Product Service
+    description: E-commerce Product Microservice
+    version: 1.0.0
+
+logging:
+  level:
+    root: INFO
+    com.ecommerce.product: DEBUG
+  file:
+    name: logs/product-service.log
