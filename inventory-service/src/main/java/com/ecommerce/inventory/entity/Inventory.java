@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
-@Table(name = "inventory")
+@Table(name = "inventory", schema = "inventory_schema")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Inventory {
+public class Inventory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
