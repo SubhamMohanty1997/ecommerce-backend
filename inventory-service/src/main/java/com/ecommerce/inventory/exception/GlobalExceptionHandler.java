@@ -19,12 +19,12 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception exception, HttpServletRequest request){
-          ErrorResponse response = new ErrorResponse(
-                  HttpStatus.NOT_FOUND.value(),
-                  HttpStatus.NOT_FOUND.getReasonPhrase(),
-                  exception.getMessage(),
-                  request.getRequestURI()
-          );
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
