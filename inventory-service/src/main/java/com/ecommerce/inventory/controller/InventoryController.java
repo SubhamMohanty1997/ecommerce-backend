@@ -1,5 +1,7 @@
 package com.ecommerce.inventory.controller;
 
+import com.ecommerce.inventory.dto.InventoryRequest;
+import com.ecommerce.inventory.dto.InventoryResponse;
 import com.ecommerce.inventory.entity.Inventory;
 import com.ecommerce.inventory.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +38,9 @@ public class InventoryController {
       return new ResponseEntity<>(inventory,HttpStatus.OK);
     }
 
-    @PutMapping("/reduce/{productId}")
-    public ResponseEntity<String> reduceStock(@PathVariable Long productId,
-                                              @RequestParam Integer quantity){
-        inventoryService.reduceStock(productId, quantity);
-        return new ResponseEntity<>("Stock updated!",HttpStatus.OK);
+    @PostMapping("/reduce")
+    public ResponseEntity<InventoryResponse> reduceStock(@RequestBody InventoryRequest request){
+        InventoryResponse response = inventoryService.reduceStock(request.getProductId(), request.getQuantity());
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.inventory.service;
 
+import com.ecommerce.inventory.dto.InventoryResponse;
 import com.ecommerce.inventory.entity.Inventory;
 import com.ecommerce.inventory.exception.InventoryNotFoundException;
 import com.ecommerce.inventory.repository.InventoryRepository;
@@ -54,12 +55,15 @@ public class InventoryServiceImpl implements InventoryService{
     @CacheEvict(value = "inventory", key="#productId")
     @Transactional
     @Override
-    public void reduceStock(Long productId, Integer quantity) {
+    public InventoryResponse reduceStock(Long productId, Integer quantity) {
           Inventory inventory = getInventoryByProductId(productId);
           if(inventory.getQuantity()< quantity){
               throw new RuntimeException("Insufficient stock");
           }
-          inventory.setQuantity(inventory.getQuantity()-quantity);
-          inventory.setInStock(inventory.getQuantity()>0);
+          InventoryResponse response = new InventoryResponse();
+          response.setProductId(inventory.getProductId());
+          response.setQuantity(inventory.getQuantity()-quantity);
+          response.setInStock(inventory.getQuantity()>0);
+        return response;
     }
 }

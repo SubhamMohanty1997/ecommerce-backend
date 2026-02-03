@@ -1,6 +1,8 @@
 package com.ecommerce.order.service;
 
 import com.ecommerce.order.constant.OrderStatus;
+import com.ecommerce.order.dto.InventoryRequest;
+import com.ecommerce.order.dto.InventoryResponse;
 import com.ecommerce.order.dto.ProductResponse;
 import com.ecommerce.order.entity.Order;
 import com.ecommerce.order.exception.ProductNotFoundException;
@@ -9,6 +11,10 @@ import com.ecommerce.order.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(Long productId, Integer quantity) {
 
-        String productUrl = productServiceUrl+"/api/v1/products/"+productId;
+        String productUrl = productServiceUrl+"/api/v1/products/get/"+productId;
         ProductResponse product = restTemplate.getForObject(productUrl, ProductResponse.class);
 
         if(product == null){
@@ -55,22 +61,33 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Product out of stock");
         }
 
+
+
+        String reduceStockUrl = inventoryServiceUrl
+                + "/api/v1/inventory/reduce";
+
+        InventoryRequest inventoryRequest =
+                new InventoryRequest(productId, quantity);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<InventoryRequest> entity =
+                new HttpEntity<>(inventoryRequest, headers);
+
+        ResponseEntity<InventoryResponse> response = restTemplate.postForEntity(reduceStockUrl,entity, InventoryResponse.class);
+
+        if (response.getBody() == null ||
+                !Boolean.TRUE.equals(response.getBody().getInStock())) {
+
+            throw new RuntimeException("Inventory update failed");
+        }
         Order order = new Order();
         order.setProductId(productId);
         order.setQuantity(quantity);
         order.setPrice(product.getPrice()*quantity);
         order.setStatus(OrderStatus.CREATED);
         order.setCreatedAt(LocalDateTime.now());
-
-        orderRepository.save(order);
-
-        String reduceStockUrl = inventoryServiceUrl
-                + "/api/v1/inventory/reduce"
-                + "/" + productId
-                + "?quantity=" + quantity;
-
-        restTemplate.getForObject(reduceStockUrl,null,Void.class);
-
         order.setStatus(OrderStatus.CONFIRMED);
 
 
