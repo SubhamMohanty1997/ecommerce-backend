@@ -1,0 +1,55 @@
+server:
+  port: 9094
+
+spring:
+  application:
+    name: order-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: inventory_schema
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+    cache:
+      type: redis
+
+management:
+  server:
+    port: 8083
+  endpoints:
+    web:
+      exposure:
+        include: health,info,beans,metrics,env
+
+info:
+  app:
+    name: Inventory Service
+    description: E-commerce Inventory Microservice
+    version: 1.0.0
+
+logging:
+  level:
+    root: INFO
+    com.ecommerce.inventory: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId}] %-5level %logger{36} - %msg%n"
+
+services:
+  product:
+    url: http://localhost:9091
+  inventory:
+    url: http://localhost:9093
