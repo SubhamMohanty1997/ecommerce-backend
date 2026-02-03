@@ -24,6 +24,12 @@ public class InventoryController {
         return new ResponseEntity<>(inventory, HttpStatus.CREATED);
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> check(@RequestParam Long productId, @RequestParam Integer quantity){
+        Boolean isAvailable = inventoryService.checkStock(productId,quantity);
+        return new ResponseEntity<>(isAvailable, HttpStatus.OK);
+    }
+
     @GetMapping("/get/{productId}")
     public ResponseEntity<Inventory> getByProductId(@PathVariable Long productId){
       Inventory inventory = inventoryService.getInventoryByProductId(productId);
