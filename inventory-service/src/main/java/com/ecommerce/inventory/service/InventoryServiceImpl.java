@@ -41,6 +41,16 @@ public class InventoryServiceImpl implements InventoryService{
                 .orElseThrow(()->new InventoryNotFoundException("Inventory not found with productId: "+productId));
     }
 
+    @Override
+    public Boolean checkStock(Long productId, Integer quantity){
+         Inventory inventory = inventoryRepository.findByProductId(productId)
+             .orElseThrow(()-> new InventoryNotFoundException("Inventory not found with productId: "+productId));
+        if(inventory.getQuantity() >= quantity){
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
     @CacheEvict(value = "inventory", key="#productId")
     @Transactional
     @Override
