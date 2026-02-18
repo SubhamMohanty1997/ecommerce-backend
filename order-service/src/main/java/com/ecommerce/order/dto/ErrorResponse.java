@@ -1,7 +1,12 @@
 package com.ecommerce.order.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
 public class ErrorResponse {
     private LocalDateTime localDateTime;
     private int status;

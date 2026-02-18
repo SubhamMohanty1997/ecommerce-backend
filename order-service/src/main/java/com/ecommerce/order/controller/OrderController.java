@@ -1,13 +1,11 @@
 package com.ecommerce.order.controller;
 
+import com.ecommerce.order.dto.OrderRequest;
 import com.ecommerce.order.entity.Order;
 import com.ecommerce.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -21,12 +19,9 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(
-            @RequestParam Long productId,
-            @RequestParam Integer quantity) {
-
+    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest request){
         return ResponseEntity.ok(
-                orderService.placeOrder(productId, quantity)
+                orderService.placeOrder(request.getProductId(), request.getQuantity())
         );
     }
 }
