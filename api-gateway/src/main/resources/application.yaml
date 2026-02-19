@@ -10,6 +10,11 @@ spring:
       name: subham
       password: Zebra@3212
 
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9092
+
   cloud:
     gateway:
       routes:
