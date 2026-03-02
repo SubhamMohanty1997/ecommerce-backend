@@ -18,5 +18,5 @@ public class Role {
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String name;    // ROLE_CUSTOMER, ROLE_ADMIN, ROLE_MERCHANT
 }
