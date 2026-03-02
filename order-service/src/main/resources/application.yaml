@@ -18,14 +18,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        default_schema: inventory_schema
+        default_schema: order_schema
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
-    cache:
-      type: redis
 
 management:
   server:
@@ -37,8 +31,8 @@ management:
 
 info:
   app:
-    name: Inventory Service
-    description: E-commerce Inventory Microservice
+    name: Order Service
+    description: E-commerce Order Microservice
     version: 1.0.0
 
 logging:
