@@ -2,6 +2,9 @@ package com.ecommerce.user.service;
 
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,11 +30,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    @Cacheable(value = "users", key = "#id")
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found!"));
     }
 
+    @CachePut(value = "users", key = "#id")
     @Override
     public User updateUser(Long id, User user) {
         User existing = userRepository.findById(id)
@@ -42,7 +47,7 @@ public class UserServiceImpl implements UserService {
         User updated = userRepository.save(existing);
         return updated;
     }
-
+    @CacheEvict(value = "users", key = "#id")
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
